@@ -4,7 +4,7 @@
 #include <set>
 namespace legit
 {
-  Core::Core(const char **instanceExtensions, uint32_t instanceExtensionsCount, WindowDesc *compatibleWindowDesc, bool enableDebugging)
+  Core::Core(const char **instanceExtensions, uint32_t instanceExtensionsCount, GLFWwindow *compatibleGLFWwindow, bool enableDebugging)
   {
     std::vector<const char*> resIntanceExtensions(instanceExtensions, instanceExtensions + instanceExtensionsCount);
     std::vector<const char*> validationLayers;
@@ -31,11 +31,11 @@ namespace legit
       std::cout << "  " << extension.extensionName << "\n";
     }*/
 
-    if(compatibleWindowDesc)
+    if(compatibleGLFWwindow)
     {
-      vk::UniqueSurfaceKHR compatibleSurface;
-      if (compatibleWindowDesc)
-        compatibleSurface = CreateWin32Surface(instance.get(), *compatibleWindowDesc);
+      vk::UniqueSurfaceKHR compatibleSurface = CreateSurface(instance.get(), compatibleGLFWwindow);
+      //if (compatibleWindowDesc)
+	  //  compatibleSurface = CreateWin32Surface(instance.get(), *compatibleWindowDesc);
       this->queueFamilyIndices = FindQueueFamilyIndices(physicalDevice, compatibleSurface.get());
     }
     
@@ -59,9 +59,9 @@ namespace legit
     this->descriptorSetCache->Clear();
     this->pipelineCache->Clear();
   }
-  std::unique_ptr<Swapchain> Core::CreateSwapchain(WindowDesc windowDesc, uint32_t imagesCount, vk::PresentModeKHR preferredMode)
+  std::unique_ptr<Swapchain> Core::CreateSwapchain(GLFWwindow* window, uint32_t imagesCount, vk::PresentModeKHR preferredMode)
   {
-    auto swapchain = std::unique_ptr<Swapchain>(new Swapchain(instance.get(), physicalDevice, logicalDevice.get(), windowDesc, imagesCount, queueFamilyIndices, preferredMode));
+    auto swapchain = std::unique_ptr<Swapchain>(new Swapchain(instance.get(), physicalDevice, logicalDevice.get(), window, imagesCount, queueFamilyIndices, preferredMode));
     return swapchain;
   }
     

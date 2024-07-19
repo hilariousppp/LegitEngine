@@ -2,10 +2,10 @@ namespace legit
 {
   struct PresentQueue
   {
-    PresentQueue(legit::Core *core, legit::WindowDesc windowDesc, uint32_t imagesCount, vk::PresentModeKHR preferredMode)
+    PresentQueue(legit::Core *core, GLFWwindow* window, uint32_t imagesCount, vk::PresentModeKHR preferredMode)
     {
       this->core = core;
-      this->swapchain = core->CreateSwapchain(windowDesc, imagesCount, preferredMode);
+      this->swapchain = core->CreateSwapchain(window, imagesCount, preferredMode);
       this->swapchainImageViews = swapchain->GetImageViews();
       this->swapchainRect = vk::Rect2D(vk::Offset2D(), swapchain->GetSize());
       this->imageIndex = -1;
@@ -45,12 +45,12 @@ namespace legit
   
   struct InFlightQueue
   {
-    InFlightQueue(legit::Core *core, legit::WindowDesc windowDesc, uint32_t inFlightCount, vk::PresentModeKHR preferredMode)
+    InFlightQueue(legit::Core *core, GLFWwindow* window, uint32_t inFlightCount, vk::PresentModeKHR preferredMode)
     {
       this->core = core;
       this->memoryPool = std::make_unique<legit::ShaderMemoryPool>(core->GetDynamicMemoryAlignment());
 
-      presentQueue.reset(new PresentQueue(core, windowDesc, inFlightCount, preferredMode));
+      presentQueue.reset(new PresentQueue(core, window, inFlightCount, preferredMode));
 
 
       for (size_t frameIndex = 0; frameIndex < inFlightCount; frameIndex++)

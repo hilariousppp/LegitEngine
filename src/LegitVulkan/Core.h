@@ -9,18 +9,18 @@ namespace legit
   class Core
   {
   public:    
-    Core(const char** instanceExtensions, uint32_t instanceExtensionsCount, WindowDesc* compatibleWindowDesc, bool enableDebugging);
+    Core(const char** instanceExtensions, uint32_t instanceExtensionsCount, GLFWwindow* compatibleGLFWwindow, bool enableDebugging);
 
     ~Core();
     void ClearCaches();
-    std::unique_ptr<Swapchain> CreateSwapchain(WindowDesc windowDesc, uint32_t imagesCount, vk::PresentModeKHR preferredMode);
+    std::unique_ptr<Swapchain> CreateSwapchain(GLFWwindow* windowDesc, uint32_t imagesCount, vk::PresentModeKHR preferredMode);
 
 
     template<typename Handle, typename Loader>
     static void SetObjectDebugName(vk::Device logicalDevice, Loader& loader, Handle objHandle, std::string name)
     {
       auto nameInfo = vk::DebugUtilsObjectNameInfoEXT()
-        .setObjectHandle(uint64_t(Handle::CType(objHandle)))
+        .setObjectHandle(uint64_t(typename Handle::CType(objHandle)))
         .setObjectType(objHandle.objectType)
         .setPObjectName(name.c_str());
       if(loader.vkSetDebugUtilsObjectNameEXT)

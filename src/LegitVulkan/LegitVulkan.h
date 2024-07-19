@@ -1,9 +1,11 @@
 #pragma once
-#define VK_USE_PLATFORM_WIN32_KHR
 //#include <vulkan/vulkan.h>
 //#include <vulkan/vk_sdk_platform.h>
 #define NOMINMAX
 #include <vulkan/vulkan.hpp>
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
 //#include <Windows.h>
 

@@ -12,10 +12,6 @@
 
 #include <iostream>
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 
 #include "json/json.h"
 #include <chrono>
@@ -85,27 +81,27 @@ int RunDemo(int currDemo)
 
   if(currDemo == 0)
   {
-    configFilename = "../data/scenes/DummyScene.json";
+    configFilename = "../data/Scenes/DummyScene.json";
     geomType = Scene::GeometryTypes::Triangles;
     rendererName = "WaterRenderer";
   }
 
   if (currDemo == 1)
   {
-    configFilename = "../data/scenes/SponzaSceneLight.json";
+    configFilename = "../data/Scenes/SponzaSceneLight.json";
     geomType = Scene::GeometryTypes::SizedPoints;
     rendererName = "PointRenderer";
   }
 
   if (currDemo == 2)
   {
-    configFilename = "../data/scenes/SponzaScene.json";
+    configFilename = "../data/Scenes/SponzaScene.json";
     geomType = Scene::GeometryTypes::Triangles;
     rendererName = "SSVGIRenderer";
   }
   if(currDemo == 3)
   {
-    configFilename = "../data/scenes/DummyScene.json";
+    configFilename = "../data/Scenes/DummyScene.json";
     geomType = Scene::GeometryTypes::Triangles;
     rendererName = "VolumeRenderer";
   }
@@ -117,21 +113,18 @@ int RunDemo(int currDemo)
 
   GLFWwindow* window = glfwCreateWindow(1024, 1024, "Legit Vulkan renderer", nullptr, nullptr);
   {
-    //uint32_t glfwExtensionCount = 0;
-    //const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-    const char* glfwExtensions[] = { "VK_KHR_surface", "VK_KHR_win32_surface" };
-    uint32_t glfwExtensionCount = sizeof(glfwExtensions) / sizeof(glfwExtensions[0]);
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    //const char* glfwExtensions[] = { "VK_KHR_surface"  };
+    //uint32_t glfwExtensionCount = sizeof(glfwExtensions) / sizeof(glfwExtensions[0]);
 
-    legit::WindowDesc windowDesc = {};
-    windowDesc.hInstance = GetModuleHandle(NULL);
-    windowDesc.hWnd = glfwGetWin32Window(window);
 
     bool enableDebugging = false;
     #if defined LEGIT_ENABLE_DEBUGGING
     enableDebugging = true;
     #endif
 
-    auto core = std::make_unique<legit::Core>(glfwExtensions, glfwExtensionCount, &windowDesc, enableDebugging);
+    auto core = std::make_unique<legit::Core>(glfwExtensions, glfwExtensionCount, window, enableDebugging);
 
     ImGuiRenderer imguiRenderer(core.get(), window);
     ImGuiUtils::ProfilersWindow profilersWindow;
@@ -201,7 +194,7 @@ int RunDemo(int currDemo)
           std::cout << "recreated\n";
           core->ClearCaches();
           //core->GetRenderGraph()->Clear();
-          inFlightQueue = std::unique_ptr<legit::InFlightQueue>(new legit::InFlightQueue(core.get(), windowDesc, 2, vk::PresentModeKHR::eMailbox));
+          inFlightQueue = std::unique_ptr<legit::InFlightQueue>(new legit::InFlightQueue(core.get(), window, 2, vk::PresentModeKHR::eMailbox));
           renderer->RecreateSwapchainResources(inFlightQueue->GetImageSize(), inFlightQueue->GetInFlightFramesCount());
           imguiRenderer.RecreateSwapchainResources(inFlightQueue->GetImageSize(), inFlightQueue->GetInFlightFramesCount());
         }

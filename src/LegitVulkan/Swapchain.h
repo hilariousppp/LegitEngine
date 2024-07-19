@@ -27,10 +27,13 @@ namespace legit
       return swapchain.get();
     }
   private:
-    Swapchain(vk::Instance instance, vk::PhysicalDevice physicalDevice, vk::Device logicalDevice, WindowDesc windowDesc, uint32_t imagesCount, QueueFamilyIndices queueFamilyIndices, vk::PresentModeKHR preferredMode)
+    Swapchain(vk::Instance instance, vk::PhysicalDevice physicalDevice, vk::Device logicalDevice, GLFWwindow* window, uint32_t imagesCount, QueueFamilyIndices queueFamilyIndices, vk::PresentModeKHR preferredMode)
     {
       this->logicalDevice = logicalDevice;
-      this->surface = legit::CreateWin32Surface(instance, windowDesc);
+      //this->surface = legit::CreateWin32Surface(instance, windowDesc);
+
+	  this->surface = CreateSurface(instance,window);
+
       if (queueFamilyIndices.presentFamilyIndex == uint32_t(-1) || !physicalDevice.getSurfaceSupportKHR(queueFamilyIndices.presentFamilyIndex, surface.get()))
         throw std::runtime_error("Window surface is incompatible with device");
 
